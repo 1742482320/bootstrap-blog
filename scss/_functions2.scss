@@ -1,0 +1,88 @@
+
+// 检查集合
+@mixin _assert-asending($map,$map-name){
+    $prev-key: null;
+    $prev-num: null;
+    @each $key, $num in $map {
+        @if $prev-num or unit($num) == "%" or unit($prev-num) == "%"{
+            
+        } @else if not comparable($prev-num,$num){ // 判断是否是同类型值
+            @warn "当前值与上一个值不是同一类型值";
+        } @else if $prev-num >= $num { // 判断是否从小到大
+            @warn "集合没有从小到大";
+        }
+        $prev-num: $key;
+        $prev-num: $num;
+    }
+}
+
+// 检查是否从0开始
+@mixin _assert-starts-at-zero($map, $map-name: "$grid-braakpoints"){
+    $values: map-values($map);
+    $first-value: nth($values, 1);
+    @if $first-value !=0 {
+        @if $first-value !=0 {}
+        @warn "集合的第一个值非等于0";
+    }
+}
+
+// 把集合中的值变成负数
+@function negativify-map($map){
+    $result: ();
+    @each $key, $value in $map {
+        @if $key !=0 {
+            $result: map-merge($result, ("n" + $key: (-$value)));
+        }
+    }
+    @return $result;
+}
+
+// 从集合中获取键和值
+@function map-get-multiple($map, $value){
+    $result: ();
+    @each $key, $value in $map {
+        @if (index($values, $key) != null){
+            $result: map-merge($result, ($key: $value));
+        }
+    }
+    @return $map;
+}
+
+@function str-replace($string, $search, $replace: "") {
+    $index: str-index($string, $search);
+  
+    @if $index {
+      @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    }
+  
+    @return $string;
+}
+  
+@function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light){
+    $r: red($color);
+    $g: green($color);
+    $b: blue($color);
+
+    $yiq: (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+    
+    @return if($yiq >= $yiq-contrasted-threshold, $dark, $light);
+}
+
+@function color($key: "blue"){
+    @return map-get($colors, $key);
+}
+
+@function theme-color($key: "primary"){
+    @return map-get($theme-colors, $key);
+}
+
+@function gray($key: "100"){
+    @return map-get($grays, $key);
+}
+
+@function theme-color-level($color-name: "primary", $level: 0){
+    $color: theme-color($color-name);
+    $color-base: if($level>0,$black,$white);
+    $level: abs($leevl);
+    @return mix($color-base, $color,$level * $theme-color-interval);
+}

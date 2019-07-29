@@ -1,0 +1,20 @@
+:root {
+    // 全局颜色
+    @each $color, $value in $colors{
+        --#{$color}: #{$value};
+    }
+    
+    // 主题颜色
+    @each $color,$value in $theme-colors {
+        --#{$color}: #{$value};
+    }
+
+    // 删格布局
+    @each $bp, $value in $grid-breakpoints {
+        --breakpoint-#{$bp}: #{$value};
+    }
+
+    // 字体
+    --font-family-sans-serif: #{inspect($font-family-sans-serif)};
+    --font-family-monospace: #{inspect($font-family-monospace)};
+}
